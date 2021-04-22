@@ -1,0 +1,41 @@
+version: "3.5"
+services:
+  api:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: magellan
+    volumes:
+      - ".:/app"
+    ports:
+      - "5000:5000"
+    command: bash -c "go mod download && make serve"
+    networks:
+      - magellan-network
+
+
+  database:
+    image: postgres:12
+    restart: always
+    ports:
+      - "5432:5432"
+    command: -p 5432
+    environment:
+      POSTGRES_DB: magellan
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - magellan-network
+    volumes:
+      - magellan-data:/var/lib/postgresql/data
+
+networks:
+  magellan-network: {}
+volumes:
+  magellan-data: {}

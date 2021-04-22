@@ -1,0 +1,15 @@
+FROM golang:1.15-alpine
+# Update, upgrade and install deps
+RUN apk update && apk upgrade && \
+apk add --no-cache bash autoconf automake libtool gettext gettext-dev make g++ texinfo curl
+
+# Install relevant Install fswatch
+WORKDIR /root
+RUN wget https://github.com/emcrisostomo/fswatch/releases/download/1.15.0/fswatch-1.15.0.tar.gz
+RUN tar -xvzf fswatch-1.15.0.tar.gz
+WORKDIR /root/fswatch-1.15.0
+RUN ./configure
+RUN make
+RUN make install
+
+WORKDIR /app
