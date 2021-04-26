@@ -16,4 +16,23 @@ start:
 restart: kill before start
 	@echo "STARTED" && printf '%*s\n' "40" '' | tr ' ' -
 
+setup_goose:
+	go get -u github.com/pressly/goose/cmd/goose
+
+migrations_status: setup_goose
+	goose -dir ./migrations postgres "host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASSWORD) dbname=$(DB_NAME) sslmode=disable"  status
+
+migrations_create: setup_goose
+	@read -p "migration name: " NAME \
+	&& goose -dir ./migrations create $$NAME sql
+
+migrations_up: setup_goose
+	goose -dir ./migrations postgres "host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASSWORD) dbname=$(DB_NAME) sslmode=disable"  up
+
+migrations_down: setup_goose
+	goose -dir ./migrations postgres "host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASSWORD) dbname=$(DB_NAME) sslmode=disable" down
+
+migrations_reset: setup_goose
+	goose -dir ./migrations postgres "host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASSWORD) dbname=$(DB_NAME) sslmode=disable" reset
+
 .PHONY: serve restart kill before start
