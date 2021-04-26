@@ -31,6 +31,8 @@ func Connect(config config.DBConfig) (*sql.DB, error) {
 		return nil, err
 	}
 
+	db.SetMaxOpenConns(5)
+
 	return db, nil
 }
 
