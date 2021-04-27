@@ -42,7 +42,7 @@ func main() {
 
 	authorServer := author.NewServer(cfg, db)
 	contentServer := content.NewServer(cfg)
-	siteServer := site.NewServer(cfg)
+	siteServer := site.NewServer(cfg, db)
 	tagServer := tag.NewServer(cfg)
 
 	authorRoutes := authorServer.SetupRoutes()
